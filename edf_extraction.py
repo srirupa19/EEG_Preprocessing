@@ -272,11 +272,11 @@ class Extractor:
                 
                 tmp_raw_edf.crop(interval_start, interval_end, include_tmax=False)
                 
-                if n > 0:
+                if n >= 0:
                     scan_id = filename.split('.')[0]
-                    write_mne_edf(tmp_raw_edf, fname=folder+'/'+scan_id + '_' + str(n)+'.edf', overwrite=True)
-                else:
-                    write_mne_edf(tmp_raw_edf, fname=folder+'/'+filename, overwrite=True)
+                    write_mne_edf(tmp_raw_edf, fname=folder+'/'+scan_id + '_' + str(n + 1)+'.edf', overwrite=True)
+                # else:
+                #     write_mne_edf(tmp_raw_edf, fname=folder+'/'+filename, overwrite=True)
         else:
             print('No clean intervals of needed length')
             

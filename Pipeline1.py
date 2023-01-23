@@ -16,17 +16,16 @@ intervals with zero signal. Thus traget slices acquired only from clean interval
 without flat intervals, hyperventilation and photic stimulation. Slices taken from the beginning, 
 first minute taken as "bad" by default. The algoritm also handles cases when "bad intervals" overlap"""
 
-filepath = "C:/Srirupa/Mitacs Project/Raw EEG/sample_data.edf"
+filepath = "C:/Srirupa/EEG Prepocessing/Raw EEG/sample_data.edf"
+output_path = "C:/Srirupa/EEG Prepocessing/Clean EEG"
 
-output_path = "C:/Srirupa/Mitacs Project/Clean EEG"
-
-# Initiate the preprocessing object, filter the data between 0.5 Hz and 55 Hz and resample to 200 Hz.
+# Initiate the preprocessing(cleaning) object, filter the data between 0.5 Hz and 55 Hz and resample to 500 Hz.
 p = Extractor(filepath, target_frequency=500)
 
 # This calls internal functions to detect 'bad intervals' and define 5 'good' ones 60 seconds each
 p.extract_good(target_length=60, target_segments=5)
 
-# Calling the function saves new EDF files to output_folder. In case there are more than 1, it adds suffix "_n" to the file name 
-p.save_edf(folder=output_path, filename='processed_data.edf')
+# Calling the function saves new clean EDF files to output_folder. In case there are more than 1, it adds suffix "_n" to the file name 
+p.save_edf(folder=output_path, filename='clean_data.edf')
 
 
