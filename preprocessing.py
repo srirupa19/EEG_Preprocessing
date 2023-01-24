@@ -152,14 +152,16 @@ class Pipeline:
         """
         self.rawIca = self.rawPrep
         self.rawIca.filter(l_freq=1, h_freq=None)
-        ica = ICA(n_components=components, max_iter='auto', random_state=97)
+        raw_copy = self.rawIca.copy()
+        ica = ICA(n_components=len(raw_copy.pick_types(eeg=True, exclude='bads', 
+                selection=None, verbose=None).ch_names), max_iter='auto', random_state=97)
         ica.fit(self.rawIca)
         
         if "EOG1" in self.rawIca.ch_names or "EOG2" in self.rawIca.ch_names:
             eog_indices, eog_scores = ica.find_bads_eog(self.rawIca)
             ica.exclude = eog_indices
 
-            if (view_plots):
+            if (view_plots) and eog_indices != []:
                 ica.plot_scores(eog_scores)
             
                 # plot diagnostics
@@ -178,7 +180,7 @@ class Pipeline:
                                                         threshold='auto')
             ica.exclude = ecg_indices
 
-            if (view_plots):
+            if (view_plots) and ecg_indices != []:
                 # barplot of ICA component "ECG match" scores
                 ica.plot_scores(ecg_scores)
 
@@ -199,6 +201,9 @@ class Pipeline:
         Returns:
             None
         """
+
+        raw_np = raw.get_data();
+        print(raw_np.shape);
         artifact_picks = mne.pick_channels(raw.ch_names, include=raw.ch_names)
         raw.plot(order=artifact_picks, n_channels=len(artifact_picks),
                 show_scrollbars=False, duration=0.5, start=0, block=True)

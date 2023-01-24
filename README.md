@@ -26,6 +26,7 @@ The code is aimed to preprocess clinical EEG recordings and make them a suitable
 4) **In case of extracting to Numpy arrays** signal values are also ZScore noramilized. Doesn't apply in case of saving output to EDF file(s).
 ## Usage
 You need both modules edf_preprocessing.py and individual_func.py. The later contains python routine for saving output in EDF format again. The sample code for testing this out is given in Pipeline1.py. (Also shown here)
+
 ```python
 import os
 import numpy as np
@@ -48,6 +49,7 @@ p.save_edf(folder=output_path, filename='clean_data.edf')
 ```
 
 ## Pipeline 2 
+This is the next step after Pipeline 1. Can only be implemented once Pipeline1 has been executed.
 
 1) resample each recording's signal to traget frequency
 2) filters the EEG segemts from a lower frequency of 5 Hz to an upper frequency of 100 Hz
@@ -57,6 +59,8 @@ p.save_edf(folder=output_path, filename='clean_data.edf')
 
 ## Usage
 You need the module preprocessing.py. The sample code for testing this out is given in Pipeline2.py. (Also shown here)
+
+By default veiwplots is False in case of multiple files. To view the plots you need to pass True as the third argument(usually done in case of using single file inputs).
 
 ```python
 import os
@@ -69,11 +73,11 @@ filepath = "C:/Srirupa/EEG Prepocessing/Clean EEG/clean_data_1.edf"
 output_path = "C:/Srirupa/EEG Prepocessing/Processed EEG/processed_data_1.edf"
 
 # Initiate the preprocessing object
-p = Pipeline(filepath)
+p = Pipeline(filepath, True)
 
 # Calling the function filters the data between 0.5 Hz and 55 Hz, resamples to 500 Hz
 # and performs ICA after applying the PREP pipeline to remove bad channels
-p.applyPipeline(500, 12)
+p.applyPipeline(500, 12, True)
 
 # Calling the function gets the pre-processed data in raw format
 raw = p.getRaw()

@@ -12,11 +12,11 @@ filepath = "C:/Srirupa/EEG Prepocessing/Clean EEG/clean_data_1.edf"
 output_path = "C:/Srirupa/EEG Prepocessing/Processed EEG/processed_data_1.edf"
 
 # Initiate the preprocessing object
-p = Pipeline(filepath)
+p = Pipeline(filepath, True)
 
 # Calling the function filters the data between 0.5 Hz and 55 Hz, resamples to 500 Hz
 # and performs ICA after applying the PREP pipeline to remove bad channels
-p.applyPipeline(500, 12)
+p.applyPipeline(500, 12, True)
 
 # Calling the function gets the pre-processed data in raw format
 raw = p.getRaw()
