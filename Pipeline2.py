@@ -8,7 +8,7 @@ from preprocessing import Pipeline
 bad channels(as per PREP pipeline). It also performs ICA on the given segment, and finally performs current source 
 density on the raw data. It outputs the ready to be used EEG signals in raw format."""
 
-filepath = "C:/Srirupa/EEG Prepocessing/Clean EEG/clean_data_1.edf"
+filepath = "C:/Srirupa/EEG Prepocessing/Clean EEG/clean_data_2.edf"
 output_path = "C:/Srirupa/EEG Prepocessing/Processed EEG/processed_data_1.edf"
 
 # Initiate the preprocessing object
@@ -16,7 +16,7 @@ p = Pipeline(filepath, True)
 
 # Calling the function filters the data between 0.5 Hz and 55 Hz, resamples to 500 Hz
 # and performs ICA after applying the PREP pipeline to remove bad channels
-p.applyPipeline(500, 12, True)
+p.applyPipeline(500, 12, True, True)
 
 # Calling the function gets the pre-processed data in raw format
 raw = p.getRaw()
@@ -31,5 +31,7 @@ write_mne_edf(raw, fname=output_path, overwrite=True)
 raw_csd = mne.preprocessing.compute_current_source_density(raw)
 
 # Plots the current source density of the pre-proceesed EEG
-artifact_picks_1 = mne.pick_channels(raw_csd.ch_names, include=raw_csd.ch_names)
-raw_csd.plot(order=artifact_picks_1, n_channels=len(artifact_picks_1),duration=0.5, show_scrollbars=False, block = True)
+artifact_picks = mne.pick_channels(raw_csd.ch_names, include=raw_csd.ch_names)
+raw_csd.plot(order=artifact_picks, n_channels=len(artifact_picks),
+                    show_scrollbars=False, duration=5, start=0, block=True, 
+                    scalings='auto')

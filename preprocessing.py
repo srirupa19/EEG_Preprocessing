@@ -139,7 +139,7 @@ class Pipeline:
             self.showplot(self.rawPrep)
 
 
-    def ica(self, components, view_plots) -> None:
+    def ica(self, components, applyICA, view_plots) -> None:
         """Performs ICA on the given EEG segment for both EOG and ECG channels
 
         Args:
@@ -173,6 +173,10 @@ class Pipeline:
                 print("Removed EOG Artifacts using ICA")
                 self.showplot(self.rawIca)
 
+            if applyICA:
+                ica.apply(self.rawIca)
+                self.showplot(self.rawIca)
+
         if "EKG1" in self.rawIca.ch_names or "EKG2" in self.rawIca.ch_names:
             ica.exclude = []
             # find which ICs match the ECG pattern
@@ -190,9 +194,14 @@ class Pipeline:
 
                 # ica.apply(self.rawIca)                
                 self.showplot(self.rawIca)
+                
+            if applyICA:
+                ica.apply(self.rawIca)
+                self.showplot(self.rawIca)
 
 
-    def showplot(self, raw) -> None:
+
+    def showplot(self, raw, psd = True, time_series = True) -> None:
         """Shows the time domain plot of the given EEG segment for 30 seconds
 
         Args:
@@ -201,15 +210,17 @@ class Pipeline:
         Returns:
             None
         """
-
-        raw_np = raw.get_data();
-        print(raw_np.shape);
-        artifact_picks = mne.pick_channels(raw.ch_names, include=raw.ch_names)
-        raw.plot(order=artifact_picks, n_channels=len(artifact_picks),
-                show_scrollbars=False, duration=0.5, start=0, block=True)
+        if time_series:
+            artifact_picks = mne.pick_channels(raw.ch_names, include=raw.ch_names)
+            raw.plot(order=artifact_picks, n_channels=len(artifact_picks),
+                    show_scrollbars=False, duration=5, start=0, block=True, 
+                    scalings='auto')
+        
+        if psd:
+            viz.plot_raw_psd(raw, fmin=1, fmax=99)
         
 
-    def applyPipeline(self, target_frequency, components, view_plots = False) -> None:
+    def applyPipeline(self, target_frequency, components, applyICA = False, view_plots = False) -> None:
         """Applies the pipeline (resampling, filtering, applying PREP, performing ICA)
             on the given EEG segment
 
@@ -225,7 +236,7 @@ class Pipeline:
         self.resample(target_frequency, view_plots)
         self.filter(view_plots)
         self.prep(view_plots)
-        self.ica(components, view_plots) 
+        self.ica(components, applyICA, view_plots) 
 
     def getRaw(self):
         """
